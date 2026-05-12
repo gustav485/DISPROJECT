@@ -11,13 +11,29 @@
         <div class="container">
             <a href="{{ url_for('index') }}" class="logo">MyShop</a>
             <nav>
-                <a href="{{ url_for('index') }}">All Products</a>
+                <a href="{{ url_for('index') }}">Products</a>
+                <a href="{{ url_for('cart') }}" class="nav-cart">
+                    Cart
+                    {% if cart_count > 0 %}
+                        <span class="cart-badge">{{ cart_count }}</span>
+                    {% endif %}
+                </a>
                 <span class="nav-sep">|</span>
                 <span class="nav-user">{{ session.username }}</span>
                 <a href="{{ url_for('logout') }}">Logout</a>
             </nav>
         </div>
     </header>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="flash-container">
+                {% for msg in messages %}
+                    <div class="flash">{{ msg }}</div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
 
     <main class="container">
         {% block content %}{% endblock %}

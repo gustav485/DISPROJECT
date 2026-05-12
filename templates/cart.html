@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Your Cart — MyShop{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Your Cart</h1>
+
+{% if items %}
+<div class="cart-layout">
+    <div class="cart-items">
+        {% for item in items %}
+        <div class="cart-row">
+            <img src="{{ item.image }}" alt="{{ item.name }}" class="cart-thumb">
+            <div class="cart-row-info">
+                <a href="{{ url_for('product', product_id=item.id) }}">{{ item.name }}</a>
+                <span class="product-category">{{ item.category }}</span>
+            </div>
+            <div class="cart-row-price">${{ "%.2f"|format(item.price) }}</div>
+            <form action="{{ url_for('cart_update_route', product_id=item.id) }}" method="POST" class="cart-qty-form">
+                <input type="number" name="quantity" value="{{ item.quantity }}" min="0" class="qty-input">
+                <button type="submit" class="btn-update">Update</button>
+            </form>
+            <div class="cart-row-subtotal">${{ "%.2f"|format(item.subtotal) }}</div>
+            <form action="{{ url_for('cart_remove_route', product_id=item.id) }}" method="POST">
+                <button type="submit" class="btn-remove">Remove</button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div class="cart-summary">
+        <h2>Order Summary</h2>
+        <div class="summary-row">
+            <span>Subtotal</span>
+            <span>${{ "%.2f"|format(total) }}</span>
+        </div>
+        <div class="summary-row">
+            <span>Shipping</span>
+            <span>Free</span>
+        </div>
+        <div class="summary-row summary-total">
+            <span>Total</span>
+            <span>${{ "%.2f"|format(total) }}</span>
+        </div>
+        <button class="btn-add-to-cart" style="width:100%; margin-top:1rem;">Checkout</button>
+        <a href="{{ url_for('index') }}" class="back-link" style="display:block; text-align:center; margin-top:1rem;">Continue shopping</a>
+    </div>
+</div>
+
+{% else %}
+<div class="cart-empty">
+    <p>Your cart is empty.</p>
+    <a href="{{ url_for('index') }}" class="btn-add-to-cart" style="display:inline-block; text-decoration:none; margin-top:1rem;">Start shopping</a>
+</div>
+{% endif %}
+{% endblock %}
