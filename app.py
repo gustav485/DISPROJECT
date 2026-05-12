@@ -5,7 +5,7 @@ app = Flask(__name__)
 app.secret_key = "dev-secret-key"
 
 USERS = {
-    "admin": "password123",
+    "admin": "123",
 }
 
 products = [
