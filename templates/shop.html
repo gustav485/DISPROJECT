@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}Shop — All Products{% endblock %}
+
+{% block content %}
+<section class="shop-header">
+    <h1>Our Products</h1>
+    <p>{{ products|length }} items available</p>
+</section>
+
+<div class="product-grid">
+    {% for product in products %}
+    <a href="{{ url_for('product', product_id=product.id) }}" class="product-card">
+        <img src="{{ product.image }}" alt="{{ product.name }}">
+        <div class="product-info">
+            <span class="product-category">{{ product.category }}</span>
+            <h2>{{ product.name }}</h2>
+            <p class="product-price">${{ "%.2f"|format(product.price) }}</p>
+        </div>
+    </a>
+    {% endfor %}
+</div>
+{% endblock %}
