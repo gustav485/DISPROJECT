@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+  database:
+    image: 'postgres:latest'
+    container_name: database
+    restart: always
+    healthcheck:      
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -t 1"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 10s
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 'UIS'
+      POSTGRES_DB: GreenGroceries
+  web:
+    # entrypoint: /bin/sh
+    stdin_open: true
+    tty: true       
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    depends_on:
+      database:
+        condition: service_healthy
+    volumes:
+      - ./:/code/GreenGroceries
+    environment:
+      - PGPASSWORD=UIS
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=UIS
+      - DB_NAME=GreenGroceries
+      - DOMAIN=localhost
+      - DB_HOST=database
+    ports:
+      - "5000:5000" 
+    links:
+      - database
