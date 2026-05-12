@@ -1,6 +1,21 @@
-from flask import Flask, render_template, abort
+from flask import Flask, render_template, abort, redirect, url_for, request, session, flash
+from functools import wraps
 
 app = Flask(__name__)
+app.secret_key = "dev-secret-key"
+
+USERS = {
+    "admin": "password123",
+}
+
+
+def login_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        if "username" not in session:
+            return redirect(url_for("login", next=request.path))
+        return f(*args, **kwargs)
+    return decorated
 
 products = [
     {"id": 1, "name": "Wireless Headphones", "price": 79.99, "category": "Electronics", "description": "High-quality wireless headphones with noise cancellation and 30-hour battery life.", "image": "https://placehold.co/400x300?text=Headphones"},
@@ -16,12 +31,35 @@ products = [
 ]
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if "username" in session:
+        return redirect(url_for("index"))
+    if request.method == "POST":
+        username = request.form.get("username", "")
+        password = request.form.get("password", "")
+        if USERS.get(username) == password:
+            session["username"] = username
+            next_page = request.args.get("next", url_for("index"))
+            return redirect(next_page)
+        flash("Invalid username or password.")
+    return render_template("login.html")
+
+
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    return redirect(url_for("login"))
+
+
 @app.route("/")
+@login_required
 def index():
     return render_template("shop.html", products=products)
 
 
 @app.route("/product/<int:product_id>")
+@login_required
 def product(product_id):
     p = next((p for p in products if p["id"] == product_id), None)
     if p is None:

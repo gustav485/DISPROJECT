@@ -12,6 +12,9 @@
             <a href="{{ url_for('index') }}" class="logo">MyShop</a>
             <nav>
                 <a href="{{ url_for('index') }}">All Products</a>
+                <span class="nav-sep">|</span>
+                <span class="nav-user">{{ session.username }}</span>
+                <a href="{{ url_for('logout') }}">Logout</a>
             </nav>
         </div>
     </header>
