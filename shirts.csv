@@ -1,0 +1,13 @@
+pid,name,price,team,season,condition,size
+0,kante,1399,chelsea,20/21,9/10,large
+1,dembele,1399,psg,23/24,10/10,large
+2,rashford,1299,manchester_united,16/17,9/10,large
+3,ribery,849,bayern_munchen,12/13,7/10,xlarge
+4,kaka,1399,brasilien,10/11,9/10,large
+5,messi,1449,barcelona,12/13,8/10,medium
+6,ronaldo,1799,manchester_united,07/08,9/10,small
+7,ronaldinho,1999,brasilien,02/03,9/10,xlarge
+8,henry,1499,arsenal,06/07,9/10,xlarge
+9,van_persie,1499,arsenal,10/11,9/10,large
+10,jota,1299,liverpool,23/24,8/10,xlarge
+11,ramos,1399,spanien,12/13,9/10,xlarge
