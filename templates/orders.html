@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Orders — Football Shirt Shop{% endblock %}
+{% block content %}
+<h1 class="page-title">Your Orders</h1>
+
+{% if detailed_orders %}
+    {% for block in detailed_orders %}
+    <div class="order-card">
+        <div class="order-header">
+            <div>
+                <h2>Order #{{ block.order.pk }}</h2>
+                <p class="product-category">{{ block.order.created_at }}</p>
+            </div>
+            <div class="order-total">{{ "%.2f"|format(block.order.total) }} DKK</div>
+        </div>
+
+        <div class="order-delivery">
+            <strong>Delivery:</strong>
+            {{ block.order.customer_name }} — {{ block.order.address }}
+            {% if block.order.postal_code or block.order.city %}
+                , {{ block.order.postal_code }} {{ block.order.city }}
+            {% endif %}
+        </div>
+
+        {% if block.order_items %}
+            {% for item in block.order_items %}
+            <div class="cart-row">
+                <img src="{{ item.image }}" alt="{{ item.name }}" class="cart-thumb">
+                <div class="cart-row-info">
+                    <strong>{{ item.name|title }}</strong>
+                    <span class="product-category">{{ item.team|replace('_', ' ')|title }} · {{ item.season }} · {{ item.size }}</span>
+                </div>
+                <div>{{ item.quantity }} x {{ "%.2f"|format(item.unit_price) }} DKK</div>
+                <div class="cart-row-subtotal">{{ "%.2f"|format(item.subtotal) }} DKK</div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <p>No items were found for this order.</p>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="cart-empty">
+        <p>You have not made any orders yet.</p>
+        <a href="{{ url_for('index') }}" class="btn-add-to-cart" style="display:inline-block; text-decoration:none; margin-top:1rem;">Start shopping</a>
+    </div>
+{% endif %}
+{% endblock %}

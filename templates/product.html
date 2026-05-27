@@ -1,23 +1,16 @@
 {% extends "base.html" %}
-
-{% block title %}{{ product.name }} — MyShop{% endblock %}
-
+{% block title %}{{ product.name }} — Football Shirt Shop{% endblock %}
 {% block content %}
 <a href="{{ url_for('index') }}" class="back-link">&larr; Back to shop</a>
-
 <div class="product-detail">
-    <div class="product-detail-image">
-        <img src="{{ product.image }}" alt="{{ product.name }}">
-    </div>
+    <div class="product-detail-image"><img src="{{ product.image }}" alt="{{ product.name }}"></div>
     <div class="product-detail-info">
-        <span class="product-category">{{ product.category }}</span>
-        <h1>{{ product.name }}</h1>
-        <p class="product-price">${{ "%.2f"|format(product.price) }}</p>
+        <span class="product-category">{{ product.team|replace('_', ' ')|title }}</span>
+        <h1>{{ product.name|title }}</h1>
+        <p class="product-price">{{ "%.2f"|format(product.price) }} DKK</p>
         <p class="product-description">{{ product.description }}</p>
-        <form action="{{ url_for('cart_add_route', product_id=product.id) }}" method="POST">
-            <input type="hidden" name="next" value="{{ url_for('product', product_id=product.id) }}">
-            <button type="submit" class="btn-add-to-cart">Add to Cart</button>
-        </form>
+        <p>Season: {{ product.season }}</p><p>Condition: {{ product.condition }}</p><p>Size: {{ product.size }}</p>
+        {% if product.available %}<form action="{{ url_for('cart_add_route', product_id=product.pk) }}" method="POST"><input type="hidden" name="next" value="{{ url_for('product', product_id=product.pk) }}"><button type="submit" class="btn-add-to-cart">Add to Cart</button></form>{% else %}<div class="alert">Sold out</div>{% endif %}
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign up — Football Shirt Shop</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="login-page">
+    <div class="login-card">
+        <a href="{{ url_for('login') }}" class="logo" style="display:block; text-align:center; margin-bottom:1.5rem;">Football Shirt Shop</a>
+        <h1>Create user</h1>
+        {% with messages = get_flashed_messages() %}{% if messages %}<div class="alert">{{ messages[0] }}</div>{% endif %}{% endwith %}
+        <form method="POST">
+            <div class="form-group"><label for="full_name">Full name</label><input type="text" id="full_name" name="full_name" required></div>
+            <div class="form-group"><label for="username">Username</label><input type="text" id="username" name="username" required></div>
+            <div class="form-group"><label for="password">Password</label><input type="password" id="password" name="password" required></div>
+            <div class="form-group"><label for="password_repeat">Repeat password</label><input type="password" id="password_repeat" name="password_repeat" required></div>
+            <button type="submit" class="btn-add-to-cart" style="width:100%;">Sign up</button>
+        </form>
+    </div>
+</body>
+</html>

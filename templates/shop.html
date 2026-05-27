@@ -1,29 +1,31 @@
 {% extends "base.html" %}
-
-{% block title %}Shop — All Products{% endblock %}
-
+{% block title %}Shop — Football Shirts{% endblock %}
 {% block content %}
 <section class="shop-header">
-    <h1>Our Products</h1>
-    <p>{{ products|length }} items available</p>
+    <h1>Football shirts</h1>
+    <p>{{ products|length }} shirts shown from the SQL database</p>
 </section>
-
+<form method="POST" class="filter-form">
+    <input type="text" name="search" placeholder="Search player, team or season">
+    <select name="team"><option value="">All teams</option>{% for team in teams %}<option value="{{ team }}">{{ team|replace('_', ' ')|title }}</option>{% endfor %}</select>
+    <select name="size"><option value="">All sizes</option>{% for size in sizes %}<option value="{{ size }}">{{ size }}</option>{% endfor %}</select>
+    <input type="number" name="max_price" placeholder="Max price" min="0">
+    <button type="submit" class="btn-cart">Filter</button>
+    <a href="{{ url_for('index') }}" class="back-link">Clear</a>
+</form>
 <div class="product-grid">
     {% for product in products %}
-    <div class="product-card">
-        <a href="{{ url_for('product', product_id=product.id) }}">
-            <img src="{{ product.image }}" alt="{{ product.name }}">
-        </a>
+    <div class="product-card {% if not product.available %}muted{% endif %}">
+        <a href="{{ url_for('product', product_id=product.pk) }}"><img src="{{ product.image }}" alt="{{ product.name }}"></a>
         <div class="product-info">
-            <span class="product-category">{{ product.category }}</span>
-            <a href="{{ url_for('product', product_id=product.id) }}"><h2>{{ product.name }}</h2></a>
-            <p class="product-price">${{ "%.2f"|format(product.price) }}</p>
-            <form action="{{ url_for('cart_add_route', product_id=product.id) }}" method="POST">
-                <input type="hidden" name="next" value="{{ url_for('index') }}">
-                <button type="submit" class="btn-cart">Add to Cart</button>
-            </form>
+            <span class="product-category">{{ product.team|replace('_', ' ')|title }} · {{ product.season }} · {{ product.size }}</span>
+            <a href="{{ url_for('product', product_id=product.pk) }}"><h2>{{ product.name|title }}</h2></a>
+            <p class="product-price">{{ "%.2f"|format(product.price) }} DKK</p>
+            {% if product.available %}
+            <form action="{{ url_for('cart_add_route', product_id=product.pk) }}" method="POST"><input type="hidden" name="next" value="{{ url_for('index') }}"><button type="submit" class="btn-cart">Add to Cart</button></form>
+            {% else %}<p class="alert">Sold out</p>{% endif %}
         </div>
     </div>
-    {% endfor %}
+    {% else %}<p>No shirts found.</p>{% endfor %}
 </div>
 {% endblock %}

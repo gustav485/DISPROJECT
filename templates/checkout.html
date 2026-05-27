@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Checkout — Football Shirt Shop{% endblock %}
+{% block content %}
+<a href="{{ url_for('cart') }}" class="back-link">&larr; Back to cart</a>
+<h1 class="page-title">Checkout</h1>
+
+<div class="checkout-layout">
+    <form method="POST" action="{{ url_for('checkout') }}" class="checkout-form">
+        <h2>Delivery information</h2>
+        <div class="form-group">
+            <label for="customer_name">Full name</label>
+            <input type="text" id="customer_name" name="customer_name" required value="{{ request.form.get('customer_name', '') }}">
+        </div>
+        <div class="form-group">
+            <label for="address">Address</label>
+            <input type="text" id="address" name="address" required value="{{ request.form.get('address', '') }}">
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="postal_code">Postal code</label>
+                <input type="text" id="postal_code" name="postal_code" value="{{ request.form.get('postal_code', '') }}">
+            </div>
+            <div class="form-group">
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" value="{{ request.form.get('city', '') }}">
+            </div>
+        </div>
+
+        <div class="confirm-box">
+            <label>
+                <input type="checkbox" name="confirm_purchase" value="yes" required>
+                Are you sure you want to purchase this order?
+            </label>
+        </div>
+
+        <button type="submit" class="btn-add-to-cart" style="width:100%;">Purchase order</button>
+    </form>
+
+    <div class="cart-summary">
+        <h2>Order Summary</h2>
+        {% for item in items %}
+        <div class="summary-row">
+            <span>{{ item.name|title }} x {{ item.quantity }}</span>
+            <span>{{ "%.2f"|format(item.subtotal) }} DKK</span>
+        </div>
+        {% endfor %}
+        <div class="summary-row"><span>Shipping</span><span>Free</span></div>
+        <div class="summary-row summary-total"><span>Total</span><span>{{ "%.2f"|format(total) }} DKK</span></div>
+    </div>
+</div>
+{% endblock %}

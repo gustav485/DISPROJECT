@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><title>Database error</title><link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"></head>
+<body class="login-page"><div class="login-card" style="max-width:760px;"><h1>Database connection failed</h1><p>The website is running, but PostgreSQL is not connected.</p><pre style="white-space:pre-wrap; background:#f4f4f4; padding:1rem; border-radius:8px;">{{ error }}</pre><h2>Docker setup</h2><pre>docker compose up -d
+cp .env.example .env
+# set DB_USERNAME=postgres and DB_PASSWORD=UIS if using Docker
+python init_db.py
+python app.py</pre><h2>Mac/Homebrew setup</h2><pre>brew services start postgresql@16
+createdb football_shop
+cp .env.example .env
+# leave DB_USERNAME empty or set it to your Mac username
+python init_db.py
+python app.py</pre></div></body></html>

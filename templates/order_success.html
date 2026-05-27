@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Order Purchased — Football Shirt Shop{% endblock %}
+{% block content %}
+<div class="success-card">
+    <div class="success-icon">✓</div>
+    <h1>Order purchased</h1>
+    <p>Your order has been completed successfully.</p>
+    <div class="order-number">Order #{{ order_pk }}</div>
+    <div class="success-actions">
+        <a href="{{ url_for('index') }}" class="btn-add-to-cart">Back to shop</a>
+        <a href="{{ url_for('orders') }}" class="back-link">View my orders</a>
+    </div>
+</div>
+{% endblock %}
