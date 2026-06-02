@@ -12,6 +12,13 @@ This version is rebuilt using the same idea as GreenGroceries:
 
 See `AI_DECLARATION.md`.
 
+## Regular expression matching
+
+The app uses Python regular expressions to validate user input:
+
+- Signup usernames must match `^[A-Za-z0-9_]{3,30}$`, so usernames only contain letters, numbers, and underscores.
+- Checkout postal codes must match `^\d{4}$`, so postal codes are exactly four digits.
+
 ## Recommended setup with Docker
 
 ```bash

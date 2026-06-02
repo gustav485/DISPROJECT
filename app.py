@@ -1,5 +1,6 @@
 from functools import wraps
 import os
+import re
 
 from flask import Flask, render_template, abort, redirect, url_for, request, session, flash, send_from_directory
 from psycopg2 import OperationalError
@@ -14,6 +15,9 @@ from queries import (
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "dev-secret-key")
+
+USERNAME_RE = re.compile(r"^[A-Za-z0-9_]{3,30}$")
+POSTAL_CODE_RE = re.compile(r"^\d{4}$")
 
 
 @app.errorhandler(OperationalError)
@@ -141,6 +145,8 @@ def signup():
         password_repeat = request.form.get("password_repeat", "")
         if password != password_repeat:
             flash("Passwords do not match.")
+        elif not USERNAME_RE.fullmatch(username):
+            flash("Username must be 3-30 characters and only contain letters, numbers, or underscores.")
         elif get_user_by_username(username):
             flash("Username already exists.")
         else:
@@ -252,6 +258,10 @@ def checkout():
 
     if not customer_name or not address:
         flash("Please fill out your name and address before checkout.")
+        return render_template("checkout.html", items=items, total=total), 400
+
+    if postal_code and not POSTAL_CODE_RE.fullmatch(postal_code):
+        flash("Postal code must be exactly 4 digits.")
         return render_template("checkout.html", items=items, total=total), 400
 
     if not confirmed:
