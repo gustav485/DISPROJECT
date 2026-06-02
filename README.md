@@ -1,4 +1,4 @@
-# Football Shirt Shop — DIS database version
+# Football shirt webshop
 
 This version is rebuilt using the same idea as GreenGroceries:
 
