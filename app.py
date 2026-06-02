@@ -5,12 +5,12 @@ import re
 from flask import Flask, render_template, abort, redirect, url_for, request, session, flash, send_from_directory
 from psycopg2 import OperationalError
 
-from models import User, Product
+from models import User
 from queries import (
     verify_user, get_user_by_username, insert_user,
     get_product_by_pk, get_available_products, get_products_by_filters, get_filter_options,
     insert_order, get_orders_by_user_pk, get_order_items,
-    insert_product, update_product_availability, delete_product
+    update_product_availability
 )
 
 app = Flask(__name__)
@@ -104,18 +104,6 @@ def login_required(f):
     return decorated
 
 
-def admin_required(f):
-    @wraps(f)
-    def decorated(*args, **kwargs):
-        if "user_pk" not in session:
-            return redirect(url_for("login", next=request.path))
-        if not session.get("is_admin"):
-            flash("Only admin users can access that page.")
-            return redirect(url_for("index"))
-        return f(*args, **kwargs)
-    return decorated
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if "user_pk" in session:
@@ -127,7 +115,6 @@ def login():
         if user:
             session["user_pk"] = user.pk
             session["username"] = user.username
-            session["is_admin"] = bool(user.is_admin)
             next_page = request.args.get("next", url_for("index"))
             return redirect(next_page)
         flash("Invalid username or password.")
@@ -154,11 +141,9 @@ def signup():
                 "username": username,
                 "full_name": full_name,
                 "password": password,
-                "is_admin": False,
             }))
             session["user_pk"] = user_pk
             session["username"] = username
-            session["is_admin"] = False
             return redirect(url_for("index"))
     return render_template("signup.html")
 
@@ -298,49 +283,6 @@ def orders():
     for order in user_orders:
         detailed_orders.append({"order": order, "order_items": get_order_items(order.pk)})
     return render_template("orders.html", detailed_orders=detailed_orders)
-
-
-# ---------------------------------------------------------------------------
-# Admin/product management
-# ---------------------------------------------------------------------------
-
-@app.route("/admin/products", methods=["GET", "POST"])
-@admin_required
-def admin_products():
-    if request.method == "POST":
-        product_data = Product({
-            "original_pid": None,
-            "name": request.form.get("name"),
-            "price": request.form.get("price"),
-            "team": request.form.get("team"),
-            "season": request.form.get("season"),
-            "condition": request.form.get("condition"),
-            "size": request.form.get("size"),
-            "image": request.form.get("image") or "https://placehold.co/400x300?text=Football+Shirt",
-            "available": True,
-        })
-        insert_product(product_data)
-        flash("Product added.")
-        return redirect(url_for("admin_products"))
-    products = get_all_products()
-    return render_template("admin_products.html", products=products)
-
-
-@app.route("/admin/products/<int:product_id>/toggle", methods=["POST"])
-@admin_required
-def toggle_product(product_id):
-    p = get_product_by_pk(product_id)
-    if not p:
-        abort(404)
-    update_product_availability(product_id, not p.available)
-    return redirect(url_for("admin_products"))
-
-
-@app.route("/admin/products/<int:product_id>/delete", methods=["POST"])
-@admin_required
-def remove_product(product_id):
-    delete_product(product_id)
-    return redirect(url_for("admin_products"))
 
 
 if __name__ == "__main__":

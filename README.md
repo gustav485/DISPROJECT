@@ -3,7 +3,7 @@
 This version is rebuilt using the same idea as GreenGroceries:
 
 - `models.py` contains small model classes.
-- `queries.py` contains SQL insert/select/update/delete functions.
+- `queries.py` contains SQL insert/select/update functions.
 - `utils/users.sql` and `utils/products.sql` create the schema.
 - `init_db.py` imports the dataset from `shirts.csv` into PostgreSQL.
 - Flask routes use SQL data instead of hardcoded Python lists.
@@ -54,10 +54,9 @@ Open: `http://127.0.0.1:5000`
 
 After `python init_db.py`, these users exist:
 
-| Username | Password | Role |
-|---|---|---|
-| admin | 123 | Admin |
-| customer | pass | Customer |
+| Username | Password |
+|---|---|
+| customer | pass |
 
 You can also create new users through `/signup`.
 
@@ -106,34 +105,9 @@ python init_db.py
 
 Important: `init_db.py` resets and reimports the database, just like GreenGroceries does.
 
-## Add products without resetting the database
+## Sold products
 
-Log in as:
-
-```text
-admin / 123
-```
-
-Go to:
-
-```text
-/admin/products
-```
-
-Fill in the form and press **Add product**.
-
-## Remove or hide products
-
-Log in as admin and go to:
-
-```text
-/admin/products
-```
-
-- **Toggle** changes `available` true/false.
-- **Delete** removes the product from SQL.
-
-Checkout also sets bought products to unavailable.
+Checkout sets bought products to unavailable.
 
 ## Add users to the database
 
@@ -144,20 +118,13 @@ Go to `/signup` and create a user.
 ### Option 2: SQL manually
 
 ```sql
-INSERT INTO Users(username, full_name, password, is_admin)
-VALUES ('newuser', 'New User', 'pass', false);
-```
-
-To make an admin:
-
-```sql
-INSERT INTO Users(username, full_name, password, is_admin)
-VALUES ('newadmin', 'New Admin', '123', true);
+INSERT INTO Users(username, full_name, password)
+VALUES ('newuser', 'New User', 'pass');
 ```
 
 ## Main SQL tables
 
-- `Users`: login and role data.
+- `Users`: login data.
 - `Products`: shirts from the dataset.
 - `Orders`: one row per checkout.
 - `OrderItems`: products inside each order.

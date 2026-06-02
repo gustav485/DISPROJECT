@@ -6,27 +6,12 @@ from db import get_cursor
 
 def insert_user(user: User):
     sql = """
-    INSERT INTO Users(username, full_name, password, is_admin)
-    VALUES (%s, %s, %s, %s)
+    INSERT INTO Users(username, full_name, password)
+    VALUES (%s, %s, %s)
     RETURNING pk
     """
     with get_cursor(commit=True) as cur:
-        cur.execute(sql, (user.username, user.full_name, user.password, user.is_admin))
-        row = cur.fetchone()
-        return row.get("pk") if row else None
-
-
-def insert_product(product: Product):
-    sql = """
-    INSERT INTO Products(original_pid, name, price, team, season, condition, size, image, available)
-    VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-    RETURNING pk
-    """
-    with get_cursor(commit=True) as cur:
-        cur.execute(sql, (
-            product.original_pid, product.name, product.price, product.team, product.season,
-            product.condition, product.size, product.image, product.available
-        ))
+        cur.execute(sql, (user.username, user.full_name, user.password))
         row = cur.fetchone()
         return row.get("pk") if row else None
 
@@ -81,12 +66,6 @@ def get_product_by_pk(pk):
         return Product(cur.fetchone()) if cur.rowcount > 0 else None
 
 
-def get_all_products():
-    with get_cursor() as cur:
-        cur.execute("SELECT * FROM vw_products ORDER BY available DESC, team, name")
-        return [Product(row) for row in cur.fetchall()] if cur.rowcount > 0 else []
-
-
 def get_available_products():
     with get_cursor() as cur:
         cur.execute("SELECT * FROM vw_products WHERE available = true ORDER BY team, name")
@@ -136,13 +115,8 @@ def get_order_items(order_pk):
         return cur.fetchall() if cur.rowcount > 0 else []
 
 
-# UPDATE / DELETE QUERIES
+# UPDATE QUERIES
 
 def update_product_availability(product_pk, available):
     with get_cursor(commit=True) as cur:
         cur.execute("UPDATE Products SET available = %s WHERE pk = %s", (available, product_pk))
-
-
-def delete_product(product_pk):
-    with get_cursor(commit=True) as cur:
-        cur.execute("DELETE FROM Products WHERE pk = %s", (product_pk,))

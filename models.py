@@ -12,7 +12,6 @@ class User(ModelMixin):
         self.username = self.get("username")
         self.full_name = self.get("full_name")
         self.password = self.get("password")
-        self.is_admin = self.get("is_admin", False)
 
 
 class Product(ModelMixin):
