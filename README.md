@@ -8,6 +8,10 @@ This version is rebuilt using the same idea as GreenGroceries:
 - `init_db.py` imports the dataset from `shirts.csv` into PostgreSQL.
 - Flask routes use SQL data instead of hardcoded Python lists.
 
+## AI declaration
+
+See `AI_DECLARATION.md`.
+
 ## Recommended setup with Docker
 
 ```bash
