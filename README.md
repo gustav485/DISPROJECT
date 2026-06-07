@@ -111,11 +111,7 @@ Checkout sets bought products to unavailable.
 
 ## Add users to the database
 
-### Option 1: Through the website
-
-Go to `/signup` and create a user.
-
-### Option 2: SQL manually
+### SQL manually
 
 ```sql
 INSERT INTO Users(username, full_name, password)
@@ -149,7 +145,5 @@ Start website:
 python app.py
 ```
 
-
 ## Checkout flow
-
 The cart page only shows the cart. Pressing **Checkout** opens `/checkout`, where the customer must fill out name and address and confirm: “Are you sure you want to purchase this order?” The order is only inserted into PostgreSQL after that confirmation. Clicking the logo or **Products** always goes back to the product page and does not create an order.
